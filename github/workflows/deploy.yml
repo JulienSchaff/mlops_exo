@@ -1,0 +1,24 @@
+name: MLOPS-DEPLOY
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t mlops-deploy .
+
+      - name: Run Docker container
+        run: docker run -d -p 8025:8025 mlops-deploy
+
+      - name: Test FastAPI
+        # post request with body {"size": 120, "nb_rooms":3, "garden": 1}
+        run: |
+          curl -X POST http://localhost:8025/predict -H "Content-Type: application/json" -d '{"size": 120, "nb_rooms":3, "garden": 1}'
+          echo "Response: $response"
+
+      - name: Clean up
+        run: docker system prune -a -f
