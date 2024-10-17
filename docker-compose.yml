@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8025:8025"
+    volumes:
+      - ./app.py:/code/app.py
+      - ./regression.joblib:/code/regression.joblib
+      - ./requirements.txt:/code/requirements.txt
