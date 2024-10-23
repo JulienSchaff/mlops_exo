@@ -28,7 +28,8 @@ jobs:
             fi
             cd /home/ubuntu/julienschaffauser
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
-            docker run -d -p 8025:8025 --name mlops-deploy ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
+            docker stop ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest || true
+            docker run -d -p 8025:8025 --name ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
           EOF
       
       - name: Test the deployment
