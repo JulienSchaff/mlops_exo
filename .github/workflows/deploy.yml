@@ -26,6 +26,7 @@ jobs:
             if [ ! -d "/home/ubuntu/julienschaffauser" ]; then
               mkdir /home/ubuntu/julienschaffauser
             fi
+            cd /home/ubuntu/julienschaffauser
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
             docker run -d -p 8025:8025 --name mlops-deploy ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
           EOF
