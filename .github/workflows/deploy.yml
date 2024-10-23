@@ -28,7 +28,7 @@ jobs:
             fi
             cd /home/ubuntu/julienschaffauser
             docker pull julienschaffauser/mlops-deploy:latest
-            docker stop julienschaffauser-mlops-deploy || true
+            docker rm -f julienschaffauser-mlops-deploy
             docker run -d -p 8025:8025 --name julienschaffauser-mlops-deploy julienschaffauser/mlops-deploy:latest
           EOF
       
