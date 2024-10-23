@@ -6,19 +6,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: action/checkout
 
       - name: Build Docker image
-        run: docker build -t mlops-deploy .
+        run: docker compose build mlops-deploy
 
-      - name: Run Docker container
-        run: docker run -d -p 8025:8025 mlops-deploy
+      - name: Tag Docker image
+        run: docker tag mlops-deploy:latest ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
 
-      - name: Test FastAPI
-        # post request with body {"size": 120, "nb_rooms":3, "garden": 1}
+      - name: Login to Docker Hub with token
+        run: docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Push to Docker Hub
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
+
+      - name: Connect to SSH
         run: |
-          curl -X POST http://localhost:8025/predict -H "Content-Type: application/json" -d '{"size": 120, "nb_rooms":3, "garden": 1}'
-          echo "Response: $response"
-
-      - name: Clean up
-        run: docker system prune -a -f
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}
+          if [ ! -d "/home/ubuntu/julienschaffauser" ]; then
+            mkdir /home/ubuntu/julienschaffauser
+          fi
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
+          docker run -d -p 8025:8025 --name mlops-deploy ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
+      
+      - name: Test the deployment
+        run: |
+          curl -X POST http://${{ secrets.SSH_HOST }}:8025/predict -H "Content-Type: application/json" -d '{"size": 120, "nb_rooms":3, "garden": 1}'
