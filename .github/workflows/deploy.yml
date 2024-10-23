@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build Docker image
-        run: docker compose build mlops-deploy
+        run: docker build -t mlops-deploy:latest .
 
       - name: Tag Docker image
         run: docker tag mlops-deploy:latest ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
