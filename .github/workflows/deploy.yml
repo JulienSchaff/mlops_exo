@@ -12,13 +12,13 @@ jobs:
         run: docker build -t mlops-deploy:latest .
 
       - name: Tag Docker image
-        run: docker tag mlops-deploy:latest ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
+        run: docker tag mlops-deploy:latest julienschaffauser/mlops-deploy:latest
 
       - name: Login to Docker Hub with token
-        run: docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+        run: docker login -u julienschaffauser -p ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Push to Docker Hub
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
+        run: docker push julienschaffauser/mlops-deploy:latest
 
       - name: Connect to SSH
         run: |
@@ -27,9 +27,9 @@ jobs:
               mkdir /home/ubuntu/julienschaffauser
             fi
             cd /home/ubuntu/julienschaffauser
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
-            docker stop ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest || true
-            docker run -d -p 8025:8025 --name ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest ${{ secrets.DOCKER_HUB_USERNAME }}/mlops-deploy:latest
+            docker pull julienschaffauser/mlops-deploy:latest
+            docker stop julienschaffauser/mlops-deploy:latest || true
+            docker run -d -p 8025:8025 --name julienschaffauser/mlops-deploy:latest julienschaffauser/mlops-deploy:latest
           EOF
       
       - name: Test the deployment
