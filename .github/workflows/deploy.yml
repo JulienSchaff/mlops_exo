@@ -28,9 +28,8 @@ jobs:
             fi
             cd /home/ubuntu/julienschaffauser
             docker pull julienschaffauser/mlops-deploy:latest
-            # stop the container if it exists
-            docker stop julienschaffauser/mlops-deploy:latest || true
-            docker run -d -p 8025:8025 --name ${{ secrets.DOCKER_CONTAINER_NAME }} julienschaffauser/mlops-deploy:latest
+            docker rm -f julienschaffauser-mlops-deploy
+            docker run -d -p 8025:8025 --name julienschaffauser-mlops-deploy julienschaffauser/mlops-deploy:latest
           EOF
 
   test:
