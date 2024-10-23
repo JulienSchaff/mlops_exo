@@ -38,4 +38,4 @@ jobs:
     steps:
       - name: Test the deployment
         run: |
-          curl -X POST http://${{ secrets.SSH_HOST }}:8025/predict -H "Content-Type: application/json" -d '{"size": 120, "nb_rooms":3, "garden": 1}'
+          curl -X POST http://${{ secrets.SSH_HOST }}:8025/chat -H "Content-Type: application/json" -d '{"input": "Hello, who are you?"}'
